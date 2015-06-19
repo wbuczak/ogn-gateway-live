@@ -19,7 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 // import com.hazelcast.config.Config;
 // import com.hazelcast.core.Hazelcast;
-// Oimport com.hazelcast.core.HazelcastInstance;
+// import com.hazelcast.core.HazelcastInstance;
 
 /**
  * live.glidernet.org forwarder plug-in for OGN gateway

@@ -5,5 +5,5 @@
 package org.ogn.gateway.live;
 
 public interface MsgSender {
-    void send(String msg);
+	void send(String msg);
 }

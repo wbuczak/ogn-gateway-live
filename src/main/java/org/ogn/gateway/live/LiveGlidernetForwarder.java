@@ -21,18 +21,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * 
  * @author Seb, re-factoring: wbuczak
  */
-public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder,
-		TimeWindowBufferListener {
-
-	static {
-		System.setProperty("hazelcast.logging.type", "slf4j");
-	}
+public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeWindowBufferListener {
 
 	public static final String SERVICE_NAME = "live.glidernet.org";
 	public static final String VERSION = "1.0.0";
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(LiveGlidernetForwarder.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LiveGlidernetForwarder.class);
 
 	private static final int MAX_BUFFER_SIZE = 1500;
 	private static final int BUFFER_TIME_WINDOW = 2000;
@@ -68,11 +62,9 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder,
 		if (initialized)
 			return;
 
-		buffer = new TimeWindowBuffer<>(MAX_BUFFER_SIZE, BUFFER_TIME_WINDOW,
-				this, AMPERSAND);
+		buffer = new TimeWindowBuffer<>(MAX_BUFFER_SIZE, BUFFER_TIME_WINDOW, this, AMPERSAND);
 
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(
-				"classpath:application-context.xml");
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:application-context.xml");
 		ctx.refresh();
 		String passwd = ctx.getBean(String.class, "passwd");
 		ctx.close();
@@ -101,19 +93,15 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder,
 
 	}
 
-	static String beaconToStr(AircraftBeacon beacon,
-			AircraftDescriptor descriptor) {
+	static String beaconToStr(AircraftBeacon beacon, AircraftDescriptor descriptor) {
 		StringBuilder bld = new StringBuilder(FIX_PREFIX);
 
 		// if descriptor is provided take cn and reg number from it
 		if (descriptor != null && descriptor.isKnown()) {
-			bld.append(descriptor.getCN()).append(DELIMITER)
-					.append(descriptor.getRegNumber());
+			bld.append(descriptor.getCN()).append(DELIMITER).append(descriptor.getRegNumber());
 		} else {
-			bld.append(
-					beacon.getAddress().substring(
-							beacon.getAddress().length() - 2))
-					.append(DELIMITER).append(beacon.getAddress());
+			bld.append(beacon.getAddress().substring(beacon.getAddress().length() - 2)).append(DELIMITER)
+					.append(beacon.getAddress());
 		}
 
 		bld.append(DELIMITER);
@@ -121,13 +109,11 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder,
 		bld.append(format("%.4f", beacon.getLat())).append(DELIMITER);
 		bld.append(format("%.4f", beacon.getLon())).append(DELIMITER);
 		bld.append(format("%.0f", beacon.getAlt())).append(DELIMITER);
-		bld.append(format("%d", beacon.getTimestamp() / 1000))
-				.append(DELIMITER);
+		bld.append(format("%d", beacon.getTimestamp() / 1000)).append(DELIMITER);
 		bld.append(format("%d", beacon.getTrack())).append(DELIMITER);
 		bld.append(format("%.0f", beacon.getGroundSpeed())).append(DELIMITER);
 		bld.append(format("%.1f", beacon.getClimbRate())).append(DELIMITER);
-		bld.append(format("%d", beacon.getAircraftType().getCode())).append(
-				DELIMITER);
+		bld.append(format("%d", beacon.getAircraftType().getCode())).append(DELIMITER);
 		bld.append(beacon.getReceiverName()).append(DELIMITER);
 		bld.append(beacon.getId());
 
@@ -135,11 +121,9 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder,
 	}
 
 	@Override
-	public void onBeacon(AircraftBeacon beacon, AircraftDescriptor descriptor,
-			String rawBeacon) {
+	public void onBeacon(AircraftBeacon beacon, AircraftDescriptor descriptor, String rawBeacon) {
 
-		LOG.trace("sending beacon to {}: {} {}", SERVICE_NAME,
-				JsonUtils.toJson(beacon), JsonUtils.toJson(descriptor));
+		LOG.trace("sending beacon to {}: {} {}", SERVICE_NAME, JsonUtils.toJson(beacon), JsonUtils.toJson(descriptor));
 		buffer.add(beaconToStr(beacon, descriptor));
 	}
 

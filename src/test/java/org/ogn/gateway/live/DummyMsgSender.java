@@ -16,29 +16,29 @@ import java.util.List;
  */
 public class DummyMsgSender extends AbstractMessageSender {
 
-    List<String> buffor = new ArrayList<>();
+	List<String> buffor = new ArrayList<>();
 
-    private final String password;
+	private final String password;
 
-    public DummyMsgSender(final String passwd) {
-        this.password = passwd;
-    }
+	public DummyMsgSender(final String passwd) {
+		this.password = passwd;
+	}
 
-    @Override
-    protected synchronized void sendMessage(String msg) {
-        StringBuilder bld = new StringBuilder(HttpMsgSender.pass(password));
-        bld.append(AMPERSAND).append(msg);
+	@Override
+	protected synchronized void sendMessage(String msg) {
+		StringBuilder bld = new StringBuilder(HttpMsgSender.pass(password));
+		bld.append(AMPERSAND).append(msg);
 
-        String msgToSend = bld.toString();
+		String msgToSend = bld.toString();
 
-        buffor.add(msgToSend);
-    }
+		buffor.add(msgToSend);
+	}
 
-    public synchronized int size() {
-        return buffor.size();
-    }
+	public synchronized int size() {
+		return buffor.size();
+	}
 
-    public synchronized String[] getAll() {
-        return buffor.toArray(new String[0]);
-    }
+	public synchronized String[] getAll() {
+		return buffor.toArray(new String[0]);
+	}
 }

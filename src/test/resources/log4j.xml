@@ -19,11 +19,6 @@
 		<appender-ref ref="ConsoleAppender" />
 	</logger>
 
-	<logger name="com.hazelcast" additivity="false">
-		<level value="info" />
-		<appender-ref ref="ConsoleAppender" />
-	</logger>
-
 	<logger name="NodeMulticastListener" additivity="false">
 		<level value="warn" />
 		<appender-ref ref="ConsoleAppender" />

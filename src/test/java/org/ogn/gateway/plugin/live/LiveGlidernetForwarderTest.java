@@ -2,7 +2,7 @@
  * Copyright (c) 2014 OGN, All Rights Reserved.
  */
 
-package org.ogn.gateway.live;
+package org.ogn.gateway.plugin.live;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -70,8 +70,8 @@ public class LiveGlidernetForwarderTest {
 		for (int i = 0; i < ITERATIONS; i++) {
 			for (AircraftBeacon b : beacons) {
 				// System.out.println("adding beacon");
-				cf.onBeacon(b, null, null);
-				cf2.onBeacon(b, null, null);
+				cf.onBeacon(b, null);
+				cf2.onBeacon(b, null);
 			}
 			Thread.sleep(100);
 		}

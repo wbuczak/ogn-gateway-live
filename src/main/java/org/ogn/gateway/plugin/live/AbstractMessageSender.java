@@ -2,7 +2,7 @@
  * Copyright (c) 2015 OGN, All Rights Reserved.
  */
 
-package org.ogn.gateway.live;
+package org.ogn.gateway.plugin.live;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;

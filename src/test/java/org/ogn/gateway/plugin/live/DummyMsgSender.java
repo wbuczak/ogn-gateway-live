@@ -2,12 +2,15 @@
  * Copyright (c) 2015 OGN, All Rights Reserved.
  */
 
-package org.ogn.gateway.live;
+package org.ogn.gateway.plugin.live;
 
-import static org.ogn.gateway.live.LiveGlidernetForwarder.AMPERSAND;
+import static org.ogn.gateway.plugin.live.LiveGlidernetForwarder.AMPERSAND;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ogn.gateway.plugin.live.AbstractMessageSender;
+import org.ogn.gateway.plugin.live.HttpMsgSender;
 
 /**
  * for tests only

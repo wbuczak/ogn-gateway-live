@@ -2,9 +2,9 @@
  * Copyright (c) 2015 OGN, All Rights Reserved.
  */
 
-package org.ogn.gateway.live;
+package org.ogn.gateway.plugin.live;
 
-import static org.ogn.gateway.live.LiveGlidernetForwarder.AMPERSAND;
+import static org.ogn.gateway.plugin.live.LiveGlidernetForwarder.AMPERSAND;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

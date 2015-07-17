@@ -1,2 +1,2 @@
-# this class implements OGN forwarder for live.glidernet.org
-org.ogn.gateway.live.LiveGlidernetForwarder
+# this class implements OGN aircraft beacon forwarder for live.glidernet.org
+org.ogn.gateway.plugin.live.LiveGlidernetForwarder

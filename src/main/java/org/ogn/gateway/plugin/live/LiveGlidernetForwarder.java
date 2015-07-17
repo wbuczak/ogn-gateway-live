@@ -2,7 +2,7 @@
  * Copyright (c) 2014 OGN, All Rights Reserved.
  */
 
-package org.ogn.gateway.live;
+package org.ogn.gateway.plugin.live;
 
 import static java.lang.String.format;
 
@@ -121,7 +121,7 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeW
 	}
 
 	@Override
-	public void onBeacon(AircraftBeacon beacon, AircraftDescriptor descriptor, String rawBeacon) {
+	public void onBeacon(AircraftBeacon beacon, AircraftDescriptor descriptor) {
 
 		LOG.trace("sending beacon to {}: {} {}", SERVICE_NAME, JsonUtils.toJson(beacon), JsonUtils.toJson(descriptor));
 		buffer.add(beaconToStr(beacon, descriptor));

@@ -39,7 +39,7 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeW
 
 	private MsgSender forwarder;
 
-	private boolean initialized = false;
+	private volatile boolean initialized = false;
 
 	@Override
 	public String getName() {
@@ -59,20 +59,20 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeW
 	@Override
 	public void init() {
 
-		if (initialized)
-			return;
+		if (!initialized) {
+			
+			buffer = new TimeWindowBuffer<>(MAX_BUFFER_SIZE, BUFFER_TIME_WINDOW, this, AMPERSAND);
 
-		buffer = new TimeWindowBuffer<>(MAX_BUFFER_SIZE, BUFFER_TIME_WINDOW, this, AMPERSAND);
+			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:application-context.xml");
+			ctx.refresh();
+			String passwd = ctx.getBean(String.class, "passwd");
+			ctx.close();
 
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:application-context.xml");
-		ctx.refresh();
-		String passwd = ctx.getBean(String.class, "passwd");
-		ctx.close();
+			if (forwarder == null)
+				forwarder = new HttpMsgSender(passwd);
 
-		if (forwarder == null)
-			forwarder = new HttpMsgSender(passwd);
-
-		initialized = true;
+			initialized = true;
+		}
 	}
 
 	void init(MsgSender sender) {

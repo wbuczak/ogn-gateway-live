@@ -10,8 +10,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +39,8 @@ public class LiveGlidernetForwarderTest {
 
 		System.setProperty("live.glidernet.org.cluster.enabled", "true");
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				LiveGlidernetForwarderTest.class.getResourceAsStream("test-beacons.txt"), "UTF-8"));
-
-		List<String> aprsSentences = new ArrayList<String>();
-		String line;
-		while ((line = br.readLine()) != null) {
-			if (!line.trim().startsWith("#"))
-				aprsSentences.add(line);
-		}
-
-		br.close();
+		List<String> aprsSentences = Files.readAllLines(
+				Paths.get(this.getClass().getResource("test-beacons.txt").toURI()), Charset.defaultCharset());
 
 		List<AircraftBeacon> beacons = new ArrayList<>();
 		for (String sentence : aprsSentences) {

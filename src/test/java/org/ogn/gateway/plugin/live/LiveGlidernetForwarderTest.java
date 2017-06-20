@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
@@ -29,10 +30,10 @@ import org.ogn.commons.beacon.impl.aprs.AprsAircraftBeacon;
 public class LiveGlidernetForwarderTest {
 
 	@Mock
-	AircraftBeacon beacon;
+	AircraftBeacon		beacon;
 
 	@Mock
-	AircraftDescriptor descr;
+	AircraftDescriptor	descr;
 
 	// @Test
 	public void testClustredForwarder() throws Exception {
@@ -114,11 +115,10 @@ public class LiveGlidernetForwarderTest {
 		expect(beacon.getTimestamp()).andReturn(timestamp);
 		expect(beacon.getTrack()).andReturn(30);
 
-		expect(descr.isKnown()).andReturn(false);
+		replay(beacon);
 
-		replay(beacon, descr);
-
-		String str = LiveGlidernetForwarder.beaconToStr(beacon, descr).toString();
+		String str =
+				LiveGlidernetForwarder.beaconToStr(beacon, Optional.ofNullable((AircraftDescriptor) null)).toString();
 
 		assertEquals("fix[]=34,DD03434,52.8820,8.9590,1500,1418939437,30,120,1.2,1,TestRec,DD03434", str);
 	}
@@ -140,13 +140,12 @@ public class LiveGlidernetForwarderTest {
 		expect(beacon.getTimestamp()).andReturn(timestamp);
 		expect(beacon.getTrack()).andReturn(30);
 
-		expect(descr.isKnown()).andReturn(true);
 		expect(descr.getCN()).andReturn("3M");
 		expect(descr.getRegNumber()).andReturn("HA-4295");
 
 		replay(beacon, descr);
 
-		String str = LiveGlidernetForwarder.beaconToStr(beacon, descr).toString();
+		String str = LiveGlidernetForwarder.beaconToStr(beacon, Optional.of(descr)).toString();
 
 		assertEquals("fix[]=3M,HA-4295,52.8820,8.9590,1500,1418939437,30,120,1.2,1,TestRec,DD03434", str);
 	}

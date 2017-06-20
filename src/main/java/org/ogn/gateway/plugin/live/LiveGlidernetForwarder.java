@@ -6,6 +6,8 @@ package org.ogn.gateway.plugin.live;
 
 import static java.lang.String.format;
 
+import java.util.Optional;
+
 import org.ogn.commons.beacon.AircraftBeacon;
 import org.ogn.commons.beacon.AircraftDescriptor;
 import org.ogn.commons.beacon.forwarder.OgnAircraftBeaconForwarder;
@@ -23,23 +25,23 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeWindowBufferListener {
 
-	public static final String SERVICE_NAME = "live.glidernet.org";
-	public static final String VERSION = "1.0.0";
+	public static final String			SERVICE_NAME		= "live.glidernet.org";
+	public static final String			VERSION				= "1.0.0";
 
-	private static final Logger LOG = LoggerFactory.getLogger(LiveGlidernetForwarder.class);
+	private static final Logger			LOG					= LoggerFactory.getLogger(LiveGlidernetForwarder.class);
 
-	private static final int MAX_BUFFER_SIZE = 1500;
-	private static final int BUFFER_TIME_WINDOW = 2000;
+	private static final int			MAX_BUFFER_SIZE		= 1500;
+	private static final int			BUFFER_TIME_WINDOW	= 2000;
 
-	public static final String FIX_PREFIX = "fix[]=";
-	public static final char DELIMITER = ',';
-	public static final String AMPERSAND = "&";
+	public static final String			FIX_PREFIX			= "fix[]=";
+	public static final char			DELIMITER			= ',';
+	public static final String			AMPERSAND			= "&";
 
-	private TimeWindowBuffer<String> buffer;
+	private TimeWindowBuffer<String>	buffer;
 
-	private MsgSender forwarder;
+	private MsgSender					forwarder;
 
-	private volatile boolean initialized = false;
+	private volatile boolean			initialized			= false;
 
 	@Override
 	public String getName() {
@@ -60,10 +62,11 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeW
 	public void init() {
 
 		if (!initialized) {
-			
+
 			buffer = new TimeWindowBuffer<>(MAX_BUFFER_SIZE, BUFFER_TIME_WINDOW, this, AMPERSAND);
 
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("classpath:application-context.xml");
+			ClassPathXmlApplicationContext ctx =
+					new ClassPathXmlApplicationContext("classpath:application-context.xml");
 			ctx.refresh();
 			String passwd = ctx.getBean(String.class, "passwd");
 			ctx.close();
@@ -93,12 +96,12 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeW
 
 	}
 
-	static String beaconToStr(AircraftBeacon beacon, AircraftDescriptor descriptor) {
+	static String beaconToStr(AircraftBeacon beacon, Optional<AircraftDescriptor> descriptor) {
 		StringBuilder bld = new StringBuilder(FIX_PREFIX);
 
 		// if descriptor is provided take cn and reg number from it
-		if (descriptor != null && descriptor.isKnown()) {
-			bld.append(descriptor.getCN()).append(DELIMITER).append(descriptor.getRegNumber());
+		if (descriptor.isPresent()) {
+			bld.append(descriptor.get().getCN()).append(DELIMITER).append(descriptor.get().getRegNumber());
 		} else {
 			bld.append(beacon.getAddress().substring(beacon.getAddress().length() - 2)).append(DELIMITER)
 					.append(beacon.getAddress());
@@ -121,9 +124,10 @@ public class LiveGlidernetForwarder implements OgnAircraftBeaconForwarder, TimeW
 	}
 
 	@Override
-	public void onBeacon(AircraftBeacon beacon, AircraftDescriptor descriptor) {
+	public void onBeacon(AircraftBeacon beacon, Optional<AircraftDescriptor> descriptor) {
 
-		LOG.trace("sending beacon to {}: {} {}", SERVICE_NAME, JsonUtils.toJson(beacon), JsonUtils.toJson(descriptor));
+		LOG.trace("sending beacon to {}: {} {}", SERVICE_NAME, JsonUtils.toJson(beacon),
+				JsonUtils.toJson(descriptor.orElse(null)));
 		buffer.add(beaconToStr(beacon, descriptor));
 	}
 

@@ -19,9 +19,9 @@ import org.ogn.gateway.plugin.live.HttpMsgSender;
  */
 public class DummyMsgSender extends AbstractMessageSender {
 
-	List<String> buffor = new ArrayList<>();
+	List<String>			buffor	= new ArrayList<>();
 
-	private final String password;
+	private final String	password;
 
 	public DummyMsgSender(final String passwd) {
 		this.password = passwd;

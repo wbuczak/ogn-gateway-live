@@ -16,16 +16,16 @@ import org.slf4j.LoggerFactory;
 
 public class HttpMsgSender extends AbstractMessageSender {
 
-	private static final String SERVICE_URL = "http://live.glidernet.org/livep.php";
+	private static final String	SERVICE_URL				= "http://live.glidernet.org/livep.php";
 
-	private static final Logger LOG = LoggerFactory.getLogger(HttpMsgSender.class);
+	private static final Logger	LOG						= LoggerFactory.getLogger(HttpMsgSender.class);
 
-	private static int HTTP_CONNECT_TIMEOUT = 1000;
-	private static int HTTP_READ_TIMEOUT = 1000;
+	private static int			HTTP_CONNECT_TIMEOUT	= 1000;
+	private static int			HTTP_READ_TIMEOUT		= 1000;
 
-	private static String PASSWD_PARAM = "p";
+	private static String		PASSWD_PARAM			= "p";
 
-	private final String password;
+	private final String		password;
 
 	public static String pass(String password) {
 		return String.format("%s=%s", PASSWD_PARAM, password);

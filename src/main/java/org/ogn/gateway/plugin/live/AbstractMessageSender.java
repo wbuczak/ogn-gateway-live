@@ -14,11 +14,11 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractMessageSender implements MsgSender {
 
-	protected BlockingQueue<String> messages;
+	protected BlockingQueue<String>	messages;
 
-	private ExecutorService executor;
+	private ExecutorService			executor;
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageSender.class);
+	private static final Logger		LOG	= LoggerFactory.getLogger(AbstractMessageSender.class);
 
 	private class PollerTask implements Runnable {
 		private Logger PLOG = LoggerFactory.getLogger(PollerTask.class);
@@ -34,7 +34,7 @@ public abstract class AbstractMessageSender implements MsgSender {
 					Thread.currentThread().interrupt();
 					continue;
 				}
-			}// while
+			} // while
 			PLOG.trace("exiting..");
 		}
 	}

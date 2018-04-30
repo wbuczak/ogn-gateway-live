@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.ogn.commons.beacon.AircraftBeacon;
 import org.ogn.commons.beacon.AircraftDescriptor;
 import org.ogn.commons.beacon.AircraftType;
-import org.ogn.commons.beacon.impl.aprs.AprsAircraftBeacon;
+import org.ogn.commons.beacon.impl.aprs.AprsLineParser;
 
 @RunWith(EasyMockRunner.class)
 public class LiveGlidernetForwarderTest {
@@ -40,28 +40,28 @@ public class LiveGlidernetForwarderTest {
 
 		System.setProperty("live.glidernet.org.cluster.enabled", "true");
 
-		List<String> aprsSentences = Files.readAllLines(
+		final List<String> aprsSentences = Files.readAllLines(
 				Paths.get(this.getClass().getResource("test-beacons.txt").toURI()), Charset.defaultCharset());
 
-		List<AircraftBeacon> beacons = new ArrayList<>();
-		for (String sentence : aprsSentences) {
-			beacons.add(new AprsAircraftBeacon(sentence));
+		final List<AircraftBeacon> beacons = new ArrayList<>();
+		for (final String sentence : aprsSentences) {
+			beacons.add((AircraftBeacon) AprsLineParser.get().parse(sentence));
 		}
 
-		DummyMsgSender forwarder = new DummyMsgSender("anonymous");
-		LiveGlidernetForwarder cf = new LiveGlidernetForwarder();
+		final DummyMsgSender forwarder = new DummyMsgSender("anonymous");
+		final LiveGlidernetForwarder cf = new LiveGlidernetForwarder();
 		cf.init(forwarder);
 		assertNotNull(cf);
 
-		LiveGlidernetForwarder cf2 = new LiveGlidernetForwarder();
+		final LiveGlidernetForwarder cf2 = new LiveGlidernetForwarder();
 		cf2.init(forwarder);
 		assertNotNull(cf2);
 
 		Thread.sleep(1000);
 
-		int ITERATIONS = 10;
+		final int ITERATIONS = 10;
 		for (int i = 0; i < ITERATIONS; i++) {
-			for (AircraftBeacon b : beacons) {
+			for (final AircraftBeacon b : beacons) {
 				// System.out.println("adding beacon");
 				cf.onBeacon(b, null);
 				cf2.onBeacon(b, null);
@@ -71,7 +71,7 @@ public class LiveGlidernetForwarderTest {
 
 		Thread.sleep(2000);
 
-		String[] elements = forwarder.getAll();
+		final String[] elements = forwarder.getAll();
 
 		assertTrue(elements.length > 0);
 
@@ -79,12 +79,12 @@ public class LiveGlidernetForwarderTest {
 		// entries in the file
 		int count = 0;
 		String pass = null;
-		for (String s : elements) {
-			String[] tokens = s.split("\\&");
+		for (final String s : elements) {
+			final String[] tokens = s.split("\\&");
 			pass = tokens[0];
 			// check the pass
 			assertNotNull(pass);
-			String[] ptokens = pass.split("=");
+			final String[] ptokens = pass.split("=");
 			assertEquals(2, ptokens.length);
 			assertEquals("p", ptokens[0]);
 			assertEquals("anonymous", ptokens[1]);
@@ -101,7 +101,7 @@ public class LiveGlidernetForwarderTest {
 	@Test
 	public void testBeaconToStr1() {
 
-		long timestamp = 1418939437063L;
+		final long timestamp = 1418939437063L;
 
 		expect(beacon.getAddress()).andReturn("DD03434").times(3);
 		expect(beacon.getAircraftType()).andReturn(AircraftType.GLIDER);
@@ -117,7 +117,7 @@ public class LiveGlidernetForwarderTest {
 
 		replay(beacon);
 
-		String str =
+		final String str =
 				LiveGlidernetForwarder.beaconToStr(beacon, Optional.ofNullable((AircraftDescriptor) null)).toString();
 
 		assertEquals("fix[]=34,DD03434,52.8820,8.9590,1500,1418939437,30,120,1.2,1,TestRec,DD03434", str);
@@ -126,7 +126,7 @@ public class LiveGlidernetForwarderTest {
 	@Test
 	public void testBeaconToStr2() {
 
-		long timestamp = 1418939437063L;
+		final long timestamp = 1418939437063L;
 
 		expect(beacon.getAddress()).andReturn("DD03434").times(3);
 		expect(beacon.getAircraftType()).andReturn(AircraftType.GLIDER);
@@ -145,7 +145,7 @@ public class LiveGlidernetForwarderTest {
 
 		replay(beacon, descr);
 
-		String str = LiveGlidernetForwarder.beaconToStr(beacon, Optional.of(descr)).toString();
+		final String str = LiveGlidernetForwarder.beaconToStr(beacon, Optional.of(descr)).toString();
 
 		assertEquals("fix[]=3M,HA-4295,52.8820,8.9590,1500,1418939437,30,120,1.2,1,TestRec,DD03434", str);
 	}
